@@ -84,17 +84,15 @@ public class ReSharperSensorTest {
   @Test
   public void analyze_report_path() throws Exception {
     String languageKey = "foo";
-    String reportPathKey = "fooReport";
     Settings settings = new Settings();
     settings.setProperty(ReSharperPlugin.SOLUTION_FILE_PROPERTY_KEY, "CSharpPlayground.sln");
-    settings.setProperty(reportPathKey, "src/test/resources/SensorTest/report.xml");
+    settings.setProperty(ReSharperPlugin.CS_REPORT_PATH_KEY, "src/test/resources/SensorTest/report.xml");
 
     RulesProfile profile = mock(RulesProfile.class);
     DefaultFileSystem fileSystem = new DefaultFileSystem();
     ResourcePerspectives perspectives = mock(ResourcePerspectives.class);
-
     ReSharperSensor sensor = new ReSharperSensor(
-      new ReSharperConfiguration(languageKey, "foo-resharper", "fooReport"),
+      new ReSharperConfiguration(languageKey, "foo-resharper", ReSharperPlugin.CS_REPORT_PATH_KEY),
       settings, profile, fileSystem, perspectives);
 
     List<ActiveRule> activeRules = mockActiveRules("RedundantUsingDirective");
@@ -224,8 +222,8 @@ public class ReSharperSensorTest {
 
   @Test
   public void check_project_name_property() {
-    thrown.expectMessage(ReSharperPlugin.CS_REPORT_PATH_KEY);
     thrown.expect(IllegalStateException.class);
+    thrown.expectMessage(ReSharperPlugin.PROJECT_NAME_PROPERTY_KEY);
 
     Settings settings = createSettings(null, "dummy.sln", null);
     createReSharperSensor(settings).analyse(mock(Project.class), mock(SensorContext.class));
